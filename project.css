@@ -1,0 +1,16 @@
+body {
+  background-color: #cad0d3;
+  font-family: 'poppins', sans-serif;
+}
+a {
+  text-decoration: none;
+}
+nav .contact {
+  background-color: #150935;
+  color: #ffffff;
+}
+
+nav a .contact:hover {
+  background-color: #241f31;
+  color: #c5c2c2;
+}

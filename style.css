@@ -1,0 +1,43 @@
+body {
+  background-color: #cad0d3;
+  font-family: 'poppins', sans-serif;
+}
+a {
+  text-decoration: none;
+}
+nav a .contact {
+  background-color: #150935;
+  color: white;
+}
+
+nav button:hover {
+  background-color: #241f31;
+  color: #e2e2e2;
+}
+
+header {
+  margin: 40px 0;
+}
+header .container {
+  background-color: whitesmoke;
+}
+header a {
+  background-color: #150935;
+  text-decoration: none;
+  color: white;
+}
+header a:hover {
+  background-color: #241f31;
+  color: #e2e2e2;
+}
+main {
+  background-color: whitesmoke;
+  padding: 40px;
+}
+.card .btn {
+  text-decoration: none;
+  background-color: #010a29;
+}
+.card .btn:hover {
+  color: #010a29;
+}
