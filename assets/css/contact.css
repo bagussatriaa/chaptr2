@@ -1,0 +1,22 @@
+body {
+  background-color: #cad0d3;
+  font-family: 'poppins', sans-serif;
+}
+a {
+  text-decoration: none;
+}
+
+main {
+  background-color: #e7e9ee;
+}
+form label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+form button {
+  background-color: #010a29;
+}
+form button:hover {
+  background-color: #066163;
+  border-color: #066163;
+}
