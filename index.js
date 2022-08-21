@@ -24,9 +24,12 @@ app.get('/add-project', (req, res) => {
 
 app.post('/add-project', (req, res) => {
   let post = req.body;
+
   post = {
     projectName: post.projectName,
     desc: post.desc,
+    startDate: post.startDate,
+    endDate: post.endDate,
     duration: getDuration(post.startDate, post.endDate),
     node: post.node,
     python: post.python,
@@ -35,7 +38,36 @@ app.post('/add-project', (req, res) => {
   };
   // console.log(post);
   cardData.push(post);
+  res.redirect('/');
+});
 
+app.get('/edit-project/:index', (req, res) => {
+  let index = req.params.index;
+  let data = cardData[index];
+  console.log(data);
+  res.render('edit-project', { index, data });
+});
+
+app.post('/edit-project/:index', (req, res) => {
+  let index = req.params.index;
+  let dataUpdate = req.body;
+  console.log(index);
+  dataUpdate = {
+    projectName: dataUpdate.projectName,
+    desc: dataUpdate.desc,
+    startDate: dataUpdate.startDate,
+    endDate: dataUpdate.endDate,
+    duration: getDuration(dataUpdate.startDate, dataUpdate.endDate),
+    node: dataUpdate.node,
+    python: dataUpdate.python,
+    laravel: dataUpdate.laravel,
+    js: dataUpdate.js,
+  };
+  console.log(dataUpdate);
+  cardData[index] = {
+    ...dataUpdate,
+  };
+  console.log(cardData[index]);
   res.redirect('/');
 });
 
@@ -43,8 +75,12 @@ app.get('/contact', (req, res) => {
   res.render('contact');
 });
 
-app.get('/detail', (req, res) => {
-  res.render('detail');
+app.get('/detail/:index', (req, res) => {
+  let index = req.params.index;
+  console.log(index);
+  let detail = cardData[index];
+  console.log(detail);
+  res.render('detail', { index, detail });
 });
 
 app.get('/delete/:index', (req, res) => {

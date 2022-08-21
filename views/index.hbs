@@ -81,19 +81,24 @@
                   class='card-img-top rounded'
                   alt='Card Image'
                 />
-                <div class='card-body'>
-                  <h1 class='card-title fw-bold'>{{this.projectName}}</h1>
+                <div class='card-body'><a href='/detail/{{@index}}'>
+                    <h1 class='card-title text-dark fw-bold'>{{this.projectName}}</h1>
+                  </a>
                   <h6 class='card-text mb-3 text-muted'>Duration: {{this.duration}}</h6>
                   <p>{{this.desc}}</p>
                   <div class='d-flex fs-4'>
-                    <i class='fa-brands fa-{{this.node}} me-3'></i>
-                    <i class='fa-brands fa-{{this.python}} me-3'></i>
-                    <i class='fa-brands fa-{{this.laravel}} me-3'></i>
-                    <i class='fa-brands fa-{{this.js}}'></i>
+                    {{#if this.node}}
+                      <i class='fa-brands fa-node me-3'></i>{{/if}}
+                    {{#if this.python}}
+                      <i class='fa-brands fa-python me-3'></i>{{/if}}
+                    {{#if this.laravel}}
+                      <i class='fa-brands fa-laravel me-3'></i>{{/if}}
+                    {{#if this.js}}
+                      <i class='fa-brands fa-js'></i>{{/if}}
                   </div>
                   <div class='d-flex mt-4 justify-content-evenly'>
-                    <a class='btn ps-5 pe-5 text-light' href='project.html'><div class=''>Edit</div></a>
-                    <a class='btn ps-5 pe-5 text-light' href='/delete/1'>Delete</a>
+                    <a class='btn ps-5 pe-5 text-light' href='/edit-project/{{@index}}'>Edit</a>
+                    <a class='btn ps-5 pe-5 text-light' href='/delete/{{@index}}'>Delete</a>
                   </div>
                 </div>
               </div>

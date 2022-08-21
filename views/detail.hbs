@@ -29,41 +29,47 @@
     </nav>
 
     <head>
-      <h1>Dumbways Web App</h1>
+      <h1>{{detail.projectName}}</h1>
       <div class='container'>
         <img src='assets/lake geneva.jpg' alt='' />
         <div class='right'>
-          <h2>Duration:</h2>
+          <h2>Duration: {{detail.duration}}</h2>
           <div class='date'>
             <i class='fa-solid fa-calendar-days'></i>
-            <p>20 July -</p>
-            <p>30 July</p>
+            <p>{{detail.startDate}} -</p>
+            <p>{{detail.endDate}}</p>
           </div>
           <div class='duration'>
             <i class='fa-solid fa-clock'></i>
-            <p>1 Month</p>
+            <p>{{detail.duration}}</p>
           </div>
           <div class='tech'>
             <h2>Technologies</h2>
             <div class='icons1'>
-              <i class='fa-brands fa-node-js'></i>
-              <p>Node Js</p>
-              <i class='fa-brands fa-python'></i>
-              <p>Python</p>
+              {{#if detail.node}}
+                <i class='fa-brands fa-node-js'></i>
+                <p>Node Js</p>
+              {{/if}}
+              {{#if detail.python}}
+                <i class='fa-brands fa-python'></i>
+                <p>Python</p>
+              {{/if}}
             </div>
             <div class='icons2'>
-              <i class='fa-brands fa-laravel'></i>
-              <p>Laravel</p>
-              <i class='fa-brands fa-js'></i>
-              <p>Javascript</p>
+              {{#if detail.laravel}}
+                <i class='fa-brands fa-laravel'></i>
+                <p>Laravel</p>
+              {{/if}}
+              {{#if detail.js}}
+                <i class='fa-brands fa-js'></i>
+                <p>Javascript</p>
+              {{/if}}
             </div>
           </div>
         </div>
       </div>
       <main>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima natus quos cupiditate nam quis dolore quaerat deserunt ipsam exercitationem dolorum incidunt optio quisquam odit modi, culpa hic pariatur quae. Deleniti? Lorem ipsum
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam distinctio laboriosam in natus ipsam quod nostrum voluptas? Reprehenderit, suscipit quos. dolor sit amet consectetur adipisicing elit. Voluptatum fugit nemo dolores
-        corrupti deleniti eligendi sed quo praesentium tempore error.
+        {{detail.desc}}
       </main>
     </head>
   </body>
