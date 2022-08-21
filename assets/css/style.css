@@ -34,10 +34,17 @@ main {
   background-color: whitesmoke;
   padding: 40px;
 }
+.card h1 {
+  font-size: 1.5rem;
+}
+.card h6 {
+  font-size: smaller;
+}
 .card .btn {
   text-decoration: none;
   background-color: #010a29;
+  border: none;
 }
 .card .btn:hover {
-  color: #010a29;
+  background-color: #04817b;
 }

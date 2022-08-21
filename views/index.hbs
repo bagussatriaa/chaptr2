@@ -59,7 +59,7 @@
           </div>
           <div class='col-lg-5 d-flex justify-content-center'>
             <div class='card shadow-lg' style='width: 15em'>
-              <img src='../assets/img/vicky-hladynets-C8Ta0gwPbQg-unsplash.jpg' class='card-img-top' alt='...' />
+              <img src='../assets/img/vicky-hladynets-C8Ta0gwPbQg-unsplash.jpg' class='card-img-top' alt='Image' />
               <div class='card-body text-center'>
                 <h5 class='card-title fw-bold'>Rhom Iram</h5>
                 <p class='card-text'>Fullstack Developer</p>
@@ -72,27 +72,33 @@
     <main>
       <div class='container'>
         <h1 class='text-center fw-bold mb-3'>MY PROJECT</h1>
-        <div class='row' id='contents'>
-          <!-- <div class="col-lg-4">
-            <div class="card shadow-lg" width="10rem">
-              <img src="https://images.unsplash.com/photo-1490775949603-0e355e8e01ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDh8fHRlY2hub2xvZ2llc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="..." />
-              <div class="card-body">
-                <h2 class="card-title fw-bold">Title</h2>
-                <h6 class="card-text mb-3 text-muted">Duration</h6>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dignissimos dolorum ullam saepe magni unde reprehenderit quibusdam.</p>
-                <div class="d-flex fs-4">
-                  <i class="fa-brands fa-node-js me-3"></i>
-                  <i class="fa-brands fa-python me-3"></i>
-                  <i class="fa-brands fa-laravel me-3"></i>
-                  <i class="fa-brands fa-js"></i>
-                </div>
-                <div class="d-flex mt-4 justify-content-evenly">
-                  <div class="btn ps-5 pe-5"><a class="text-light" href="project.html">Edit</a></div>
-                  <div class="btn ps-5 pe-5"><a class="text-light" href="">Delete</a></div>
+        <div class='row'>
+          {{#each cardData}}
+            <div class='col-lg-4'>
+              <div class='card shadow-lg py-2 px-2' width='10rem'>
+                <img
+                  src='https://images.unsplash.com/photo-1490775949603-0e355e8e01ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDh8fHRlY2hub2xvZ2llc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
+                  class='card-img-top rounded'
+                  alt='Card Image'
+                />
+                <div class='card-body'>
+                  <h1 class='card-title fw-bold'>{{this.projectName}}</h1>
+                  <h6 class='card-text mb-3 text-muted'>Duration: {{this.duration}}</h6>
+                  <p>{{this.desc}}</p>
+                  <div class='d-flex fs-4'>
+                    <i class='fa-brands fa-{{this.node}} me-3'></i>
+                    <i class='fa-brands fa-{{this.python}} me-3'></i>
+                    <i class='fa-brands fa-{{this.laravel}} me-3'></i>
+                    <i class='fa-brands fa-{{this.js}}'></i>
+                  </div>
+                  <div class='d-flex mt-4 justify-content-evenly'>
+                    <a class='btn ps-5 pe-5 text-light' href='project.html'><div class=''>Edit</div></a>
+                    <a class='btn ps-5 pe-5 text-light' href='/delete/1'>Delete</a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div> -->
+          {{/each}}
         </div>
       </div>
     </main>
