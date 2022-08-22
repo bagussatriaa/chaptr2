@@ -1,21 +1,35 @@
 const express = require('express');
+const database = require('./connections/database');
 
 const app = express();
+
 app.set('view engine', 'hbs');
 app.use('/assets', express.static(__dirname + '/assets'));
 app.use(express.urlencoded({ extended: false }));
 
 port = 300;
 
-const cardData = [];
+// const cardData = [];
 app.get('/', (req, res) => {
-  let data = cardData.map(function (items) {
-    return {
-      ...items,
-    };
-  });
+  database.connect((err, client, done) => {
+    if (err) throw err;
 
-  res.render('index', { cardData: data });
+    client.query('SELECT * FROM tb_projects', (err, result) => {
+      if (err) throw err;
+      // console.log(result.rows);
+      data = result.rows;
+      // console.log(data);
+      // console.log(data.start_date);
+      let cardData = data.map((items) => {
+        return {
+          ...items,
+          duration: getDuration(items.start_date, items.end_date),
+        };
+      });
+      console.log(cardData);
+      res.render('index', { cardData });
+    });
+  });
 });
 
 app.get('/add-project', (req, res) => {
@@ -41,17 +55,17 @@ app.post('/add-project', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/edit-project/:index', (req, res) => {
+app.get('/update/:index', (req, res) => {
   let index = req.params.index;
   let data = cardData[index];
   console.log(data);
   res.render('edit-project', { index, data });
 });
 
-app.post('/edit-project/:index', (req, res) => {
+app.post('/update/:index', (req, res) => {
   let index = req.params.index;
   let dataUpdate = req.body;
-  console.log(index);
+  console.log(dataUpdate);
   dataUpdate = {
     projectName: dataUpdate.projectName,
     desc: dataUpdate.desc,
