@@ -1,19 +1,34 @@
-// const { query } = require('express');
 const express = require('express');
 const database = require('./connections/database');
-const app = express();
 const dayjs = require('dayjs');
+const bcrypt = require('bcrypt');
+const flash = require('express-flash');
+const session = require('express-session');
+
+const app = express();
+
+app.use(
+  session({
+    secret: 'wEver',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
+  })
+);
 
 app.set('view engine', 'hbs');
 app.use('/assets', express.static(__dirname + '/assets'));
 app.use(express.urlencoded({ extended: false }));
-
+app.use(flash());
 port = 300;
 
 database.connect((err, client, done) => {
   if (err) throw err;
 
   app.get('/', (req, res) => {
+    console.log(req.session.login);
     let query = 'SELECT * FROM tb_projects ORDER BY id DESC';
     client.query(query, (err, result) => {
       if (err) throw err;
@@ -25,14 +40,19 @@ database.connect((err, client, done) => {
         return {
           ...items,
           duration: getDuration(items.start_date, items.end_date),
+          login: req.session.login,
         };
       });
       // console.log(cardData);
-      res.render('index', { cardData });
+      res.render('index', { cardData, user: req.session.user, login: req.session.login });
     });
   });
 
   app.get('/add-project', (req, res) => {
+    if (!req.session.user) {
+      req.flash('notLogin', 'Login First');
+      return res.redirect('login');
+    }
     res.render('project');
   });
 
@@ -57,7 +77,10 @@ database.connect((err, client, done) => {
 
   app.get('/update/:id', (req, res) => {
     let id = req.params.id;
-
+    if (!req.session.user) {
+      req.flash('notLogin', 'Login First');
+      return res.redirect('login');
+    }
     let query = `SELECT * FROM tb_projects WHERE id = ${id}`;
 
     client.query(query, (err, result) => {
@@ -84,6 +107,7 @@ database.connect((err, client, done) => {
 
   app.post('/update/:id', (req, res) => {
     let id = req.params.id;
+
     // let dataUpdate = req.body[0];
     // let updating = dataUpdate;
     // console.log(dataUpdate);
@@ -132,12 +156,72 @@ database.connect((err, client, done) => {
 
   app.get('/delete/:id', (req, res) => {
     let id = req.params.id;
+    if (!req.session.user) {
+      req.flash('notLogin', 'Login First');
+      return res.redirect('login');
+    }
     console.log(id);
     let query = `DELETE FROM tb_projects WHERE id= ${id}`;
     client.query(query, (err, result) => {
       if (err) throw err;
       res.redirect('/');
     });
+  });
+
+  app.get('/register', (req, res) => {
+    res.render('register');
+  });
+
+  app.post('/register', (req, res) => {
+    let { userName, userEmail, userPw } = req.body;
+
+    let hashedPw = bcrypt.hashSync(userPw, 10);
+    let query = `INSERT INTO public.tb_user( name, email, password) VALUES ( '${userName}', '${userEmail}','${hashedPw}');`;
+
+    client.query(query, (err, result) => {
+      if (err) throw err;
+      res.redirect('/login');
+    });
+  });
+
+  app.get('/login', (req, res) => {
+    res.render('login');
+  });
+
+  app.post('/login', (req, res) => {
+    let { userEmail, userPw } = req.body;
+
+    let query = `SELECT * FROM tb_user WHERE email = '${userEmail}'`;
+
+    client.query(query, (err, result) => {
+      if (err) throw err;
+      // console.log(result.rows[0].password);
+      if (result.rows.length === 0) {
+        req.flash('failed', 'Email has not registered yet');
+        return res.redirect('login');
+      }
+
+      const matching = bcrypt.compareSync(userPw, result.rows[0].password);
+      console.log(matching);
+      if (matching) {
+        req.session.login = true;
+        req.session.user = {
+          id: result.rows[0].id,
+          name: result.rows[0].name,
+          email: result.rows[0].email,
+        };
+        req.flash('success', 'Login Success');
+        res.redirect('/');
+      } else {
+        req.flash('pwFailed', 'Wrong Password');
+        res.redirect('login');
+      }
+    });
+  });
+
+  app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
   });
 });
 
