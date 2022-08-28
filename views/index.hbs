@@ -102,12 +102,12 @@
                   </a>
                   <h6 class='card-text mb-3 text-muted'>Duration: {{this.duration}}</h6>
                   <p>{{this.desc}}</p>
-                  <div class='d-flex fs-4'>
-
-                    {{#each tech}}
-                      <i class='fa-brands fa-{{this}} '></i>
-                    {{/each}}
-
+                  <div class='row'>
+                    <div class='col-lg-6 fs-4'>
+                      {{#each tech}}
+                        <i class='fa-brands fa-{{this}} me-1'></i>
+                      {{/each}}
+                    </div>
                   </div>
                   <div class='d-flex mt-4 justify-content-evenly'>
                     {{#if this.login}}

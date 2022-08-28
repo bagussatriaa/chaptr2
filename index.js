@@ -110,16 +110,16 @@ database.connect((err, client, done) => {
 
     let dataUpdate = req.body;
     console.log(dataUpdate);
-    // let iconsUpdate = {
-    //   node: dataUpdate.node,
-    //   python: dataUpdate.python,
-    //   laravel: dataUpdate.laravel,
-    //   js: dataUpdate.js,
-    // };
-    // console.log(iconsUpdate);
+    let iconsUpdate = {
+      node: dataUpdate.node,
+      python: dataUpdate.python,
+      laravel: dataUpdate.laravel,
+      js: dataUpdate.js,
+    };
+    console.log(iconsUpdate);
 
-    let query = `UPDATE public.tb_projects SET project_name='${dataUpdate.project_name}', start_date='${dataUpdate.startDate}',
-    end_date='${dataUpdate.endDate}', "desc"='${dataUpdate.desc}' WHERE id= '${id}'`;
+    let query = `UPDATE public.tb_projects SET project_name='${dataUpdate.project_name}', start_date='${dataUpdate.startDate},',
+    end_date='${dataUpdate.endDate}', "desc"='${dataUpdate.desc}', tech= '{"${iconsUpdate.node}","${iconsUpdate.python}","${iconsUpdate.laravel}","${iconsUpdate.js}"}' WHERE id= '${id}'`;
 
     client.query(query, (err, result) => {
       if (err) throw err;
