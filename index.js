@@ -28,7 +28,7 @@ database.connect((err, client, done) => {
   if (err) throw err;
 
   app.get('/', (req, res) => {
-    console.log(req.session.login);
+    // console.log(req.session.login);
     let query = 'SELECT * FROM tb_projects ORDER BY id DESC';
     client.query(query, (err, result) => {
       if (err) throw err;
@@ -81,7 +81,7 @@ database.connect((err, client, done) => {
       req.flash('notLogin', 'Login First');
       return res.redirect('login');
     }
-    let query = `SELECT * FROM tb_projects WHERE id = ${id}`;
+    let query = `SELECT * FROM tb_projects WHERE id = '${id}'`;
 
     client.query(query, (err, result) => {
       if (err) throw err;
@@ -108,24 +108,24 @@ database.connect((err, client, done) => {
   app.post('/update/:id', (req, res) => {
     let id = req.params.id;
 
-    // let dataUpdate = req.body[0];
-    // let updating = dataUpdate;
-    // console.log(dataUpdate);
-    // console.log(updating);
-    // // let iconsUpdate = {
-    // //   node: dataUpdate.node,
-    // //   python: dataUpdate.python,
-    // //   laravel: dataUpdate.laravel,
-    // //   js: dataUpdate.js,
-    // // };
-    // // console.log(iconsUpdate);
+    let dataUpdate = req.body;
+    console.log(dataUpdate);
+    // let iconsUpdate = {
+    //   node: dataUpdate.node,
+    //   python: dataUpdate.python,
+    //   laravel: dataUpdate.laravel,
+    //   js: dataUpdate.js,
+    // };
+    // console.log(iconsUpdate);
 
-    // let query = `UPDATE public.tb_projects SET project_name=${updating.project_name}, start_date=${updating.start_date}, end_date=${updating.end_date}, "desc"=${updating.desc} WHERE id= ${id}`;
+    let query = `UPDATE public.tb_projects SET project_name='${dataUpdate.project_name}', start_date='${dataUpdate.startDate}',
+    end_date='${dataUpdate.endDate}', "desc"='${dataUpdate.desc}' WHERE id= '${id}'`;
 
-    // client.query(query, (err, result) => {
-    //   if (err) throw err;
-    // });
-    res.redirect('/');
+    client.query(query, (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.redirect('/');
+    });
   });
 
   app.get('/contact', (req, res) => {
@@ -140,6 +140,10 @@ database.connect((err, client, done) => {
       if (err) throw err;
 
       data = result.rows;
+      let sd_beforeFormat = dayjs(data[0].start_date);
+      let ed_beforeFormat = dayjs(data[0].end_date);
+      let sd_afterFormat = sd_beforeFormat.format('YYYY-MM-DD');
+      let ed_afterFormat = ed_beforeFormat.format('YYYY-MM-DD');
       // console.log(data);
       let detail = data.map((items) => {
         return {
@@ -147,9 +151,15 @@ database.connect((err, client, done) => {
           duration: getDuration(items.start_date, items.end_date),
           startDate: new Date(items.start_date),
           endDate: new Date(items.end_date),
+          sd_afterFormat,
+          ed_afterFormat,
+          node: items.tech[0],
+          python: items.tech[1],
+          laravel: items.tech[2],
+          js: items.tech[3],
         };
       });
-      console.log(detail);
+      console.log(detail[0]);
       res.render('detail', { data: detail[0] });
     });
   });

@@ -17,52 +17,66 @@
     <link href='https://fonts.googleapis.com/css2?family=Poppins&display=swap' rel='stylesheet' />
   </head>
   <body>
-    <nav>
-      <div class='nav-left'>
-        <img src='/assets/img/download-removebg-preview.png' alt='logo' width='70' />
-        <ul>
-          <a href='/'>Home</a>
-          <a href='/add-project'>My project</a>
-        </ul>
-      </div>
-      <div class='nav-right'>
-        <a href='/contact'>Contact Me</a>
+    <nav class='navbar navbar-expand-lg bg-light'>
+      <div class='container'>
+        <a class='navbar-brand' href='/'><img src='../assets/img/download-removebg-preview.png' width='50' alt='Logo' /></a>
+        <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
+          <span class='navbar-toggler-icon'></span>
+        </button>
+        <div class='collapse navbar-collapse' id='navbarSupportedContent'>
+          <ul class='navbar-nav ms-3 me-auto mb-2 mb-lg-0'>
+            <li class='nav-item'>
+              <a class='nav-link active' aria-current='page' href='/'>Home</a>
+            </li>
+            <li class='nav-item'>
+              <a class='nav-link' href='/add-project'>Add Project</a>
+            </li>
+          </ul>
+          <a href='/contact'> <button class='contact rounded-3 p-2' type='submit'>Contact Me</button></a>
+        </div>
       </div>
     </nav>
 
     <head>
-      <h1>{{data.project_name}}</h1>
-      <div class='container'>
-        <img src='assets/lake geneva.jpg' alt='' />
-        <div class='right'>
+      <h1 class='text-center my-5'>{{data.project_name}}</h1>
+      <div class='row'>
+        <div class='col-lg-7'>
+          <img src='../assets/img/download-removebg-preview.png' class='img-fluid' alt='image' />
+        </div>
+        <div class='col-lg-5'>
           <h2>Duration: {{data.duration}}</h2>
-          <div class='date'>
-            <i class='fa-solid fa-calendar-days'></i>
-            <p class='fw-bolder'>{{data.startDate}} -</p>
-            <p class='fw-bolder'>{{data.endDate}}</p>
+          <div class='date d-flex'>
+            <i class='fa-solid fa-calendar-days me-3'></i>
+            <p class='fw-bolder'>{{data.sd_afterFormat}} Until</p>
+            <p class='fw-bolder ms-1'>{{data.ed_afterFormat}}</p>
           </div>
-          <div class='duration'>
-            <i class='fa-solid fa-clock'></i>
+          <div class='duration d-flex'>
+            <i class='fa-solid fa-clock me-3'></i>
             <p>{{data.duration}}</p>
           </div>
           <div class='tech'>
             <h2>Technologies</h2>
-            <div class='icons1'>
-              {{#each data.tech}}
-                <i class='fa-brands fa-{{this}}'></i>
+            <div class='icons1 d-flex'>
+              {{#if data.node}}
+                <i class='fa-brands me-1 fs-5 fa-node-js'></i>
                 <p>Node Js</p>
-              {{/each}}
+              {{/if}}
+              {{#if data.python}}
+                <i class='ms-3 fa-brands me-1 fs-5 fa-python'></i>
+                <p>python</p>
+              {{/if}}
 
             </div>
-            <div class='icons2'>
+            <div class='icons2 d-flex'>
               {{#if data.laravel}}
-                <i class='fa-brands fa-laravel'></i>
+                <i class='fa-brands me-1 fs-5 fa-laravel'></i>
                 <p>Laravel</p>
               {{/if}}
               {{#if data.js}}
-                <i class='fa-brands fa-js'></i>
+                <i class='fa-brands me-1 fs-5 ms-3 fa-js'></i>
                 <p>Javascript</p>
               {{/if}}
+
             </div>
           </div>
         </div>
