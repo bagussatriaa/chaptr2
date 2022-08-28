@@ -81,24 +81,21 @@
                   class='card-img-top rounded'
                   alt='Card Image'
                 />
-                <div class='card-body'><a href='/detail/{{@index}}'>
+                <div class='card-body'><a href='/detail/{{this.id}}'>
                     <h1 class='card-title text-dark fw-bold'>{{this.project_name}}</h1>
                   </a>
                   <h6 class='card-text mb-3 text-muted'>Duration: {{this.duration}}</h6>
                   <p>{{this.desc}}</p>
                   <div class='d-flex fs-4'>
-                    {{#if this.tech.node}}
-                      <i class='fa-brands fa-node me-3'></i>{{/if}}
-                    {{#if this.tech}}
-                      <i class='fa-brands fa-{{this}} me-3'></i>{{/if}}
-                    {{#if this.laravel}}
-                      <i class='fa-brands fa-laravel me-3'></i>{{/if}}
-                    {{#if this.js}}
-                      <i class='fa-brands fa-js'></i>{{/if}}
+
+                    {{#each tech}}
+                      <i class='fa-brands fa-{{this}} '></i>
+                    {{/each}}
+
                   </div>
                   <div class='d-flex mt-4 justify-content-evenly'>
-                    <a class='btn ps-5 pe-5 text-light' href='/update/{{@index}}'>Edit</a>
-                    <a class='btn ps-5 pe-5 text-light' href='/delete/{{@index}}'>Delete</a>
+                    <a class='btn ps-5 pe-5 text-light' href='/update/{{id}}'>Edit</a>
+                    <a class='btn ps-5 pe-5 text-light' href='/delete/{{this.id}}'>Delete</a>
                   </div>
                 </div>
               </div>

@@ -1,7 +1,8 @@
+// const { query } = require('express');
 const express = require('express');
 const database = require('./connections/database');
-
 const app = express();
+const dayjs = require('dayjs');
 
 app.set('view engine', 'hbs');
 app.use('/assets', express.static(__dirname + '/assets'));
@@ -9,15 +10,15 @@ app.use(express.urlencoded({ extended: false }));
 
 port = 300;
 
-// const cardData = [];
-app.get('/', (req, res) => {
-  database.connect((err, client, done) => {
-    if (err) throw err;
+database.connect((err, client, done) => {
+  if (err) throw err;
 
-    client.query('SELECT * FROM tb_projects', (err, result) => {
+  app.get('/', (req, res) => {
+    let query = 'SELECT * FROM tb_projects ORDER BY id DESC';
+    client.query(query, (err, result) => {
       if (err) throw err;
-      // console.log(result.rows);
       data = result.rows;
+      // console.log(data);
       // console.log(data);
       // console.log(data.start_date);
       let cardData = data.map((items) => {
@@ -26,82 +27,118 @@ app.get('/', (req, res) => {
           duration: getDuration(items.start_date, items.end_date),
         };
       });
-      console.log(cardData);
+      // console.log(cardData);
       res.render('index', { cardData });
     });
   });
-});
 
-app.get('/add-project', (req, res) => {
-  res.render('project');
-});
+  app.get('/add-project', (req, res) => {
+    res.render('project');
+  });
 
-app.post('/add-project', (req, res) => {
-  let post = req.body;
+  app.post('/add-project', (req, res) => {
+    let data = req.body;
+    // console.log(data.projectName);
 
-  post = {
-    projectName: post.projectName,
-    desc: post.desc,
-    startDate: post.startDate,
-    endDate: post.endDate,
-    duration: getDuration(post.startDate, post.endDate),
-    node: post.node,
-    python: post.python,
-    laravel: post.laravel,
-    js: post.js,
-  };
-  // console.log(post);
-  cardData.push(post);
-  res.redirect('/');
-});
+    let icons = {
+      node: data.node,
+      python: data.python,
+      laravel: data.laravel,
+      js: data.js,
+    };
+    let query = `INSERT INTO tb_projects(project_name, start_date, end_date, "desc", tech) 
+    VALUES ('${data.project_name}', '${data.start_date}', '${data.end_date}', '${data.desc}', '{"${icons.node}","${icons.python}","${icons.laravel}","${icons.js}"}');`;
+    console.log(data);
+    client.query(query, (err, result) => {
+      if (err) throw err;
+    });
+    res.redirect('/');
+  });
 
-app.get('/update/:index', (req, res) => {
-  let index = req.params.index;
-  let data = cardData[index];
-  console.log(data);
-  res.render('edit-project', { index, data });
-});
+  app.get('/update/:id', (req, res) => {
+    let id = req.params.id;
 
-app.post('/update/:index', (req, res) => {
-  let index = req.params.index;
-  let dataUpdate = req.body;
-  console.log(dataUpdate);
-  dataUpdate = {
-    projectName: dataUpdate.projectName,
-    desc: dataUpdate.desc,
-    startDate: dataUpdate.startDate,
-    endDate: dataUpdate.endDate,
-    duration: getDuration(dataUpdate.startDate, dataUpdate.endDate),
-    node: dataUpdate.node,
-    python: dataUpdate.python,
-    laravel: dataUpdate.laravel,
-    js: dataUpdate.js,
-  };
-  console.log(dataUpdate);
-  cardData[index] = {
-    ...dataUpdate,
-  };
-  console.log(cardData[index]);
-  res.redirect('/');
-});
+    let query = `SELECT * FROM tb_projects WHERE id = ${id}`;
 
-app.get('/contact', (req, res) => {
-  res.render('contact');
-});
+    client.query(query, (err, result) => {
+      if (err) throw err;
+      let data = result.rows;
+      let sd_beforeFormat = dayjs(data[0].start_date);
+      let ed_beforeFormat = dayjs(data[0].end_date);
 
-app.get('/detail/:index', (req, res) => {
-  let index = req.params.index;
-  console.log(index);
-  let detail = cardData[index];
-  console.log(detail);
-  res.render('detail', { index, detail });
-});
+      let sd_afterFormat = sd_beforeFormat.format('YYYY-MM-DD');
+      let ed_afterFormat = ed_beforeFormat.format('YYYY-MM-DD');
+      let editData = data.map((items) => {
+        return {
+          ...items,
+          sd_afterFormat,
+          ed_afterFormat,
+        };
+      });
 
-app.get('/delete/:index', (req, res) => {
-  let index = req.params;
+      console.log(editData[0]);
 
-  cardData.splice(index, 0);
-  res.render('index');
+      res.render('edit-project', { id, data: editData[0] });
+    });
+  });
+
+  app.post('/update/:id', (req, res) => {
+    let id = req.params.id;
+    // let dataUpdate = req.body[0];
+    // let updating = dataUpdate;
+    // console.log(dataUpdate);
+    // console.log(updating);
+    // // let iconsUpdate = {
+    // //   node: dataUpdate.node,
+    // //   python: dataUpdate.python,
+    // //   laravel: dataUpdate.laravel,
+    // //   js: dataUpdate.js,
+    // // };
+    // // console.log(iconsUpdate);
+
+    // let query = `UPDATE public.tb_projects SET project_name=${updating.project_name}, start_date=${updating.start_date}, end_date=${updating.end_date}, "desc"=${updating.desc} WHERE id= ${id}`;
+
+    // client.query(query, (err, result) => {
+    //   if (err) throw err;
+    // });
+    res.redirect('/');
+  });
+
+  app.get('/contact', (req, res) => {
+    res.render('contact');
+  });
+
+  app.get('/detail/:id', (req, res) => {
+    let id = req.params.id;
+    console.log(id);
+    let query = `SELECT * FROM tb_projects WHERE id =${id}`;
+    database.query(query, (err, result) => {
+      if (err) throw err;
+
+      data = result.rows;
+      // console.log(data);
+      let detail = data.map((items) => {
+        return {
+          ...items,
+          duration: getDuration(items.start_date, items.end_date),
+          startDate: new Date(items.start_date),
+          endDate: new Date(items.end_date),
+        };
+      });
+      console.log(detail);
+      res.render('detail', { data: detail[0] });
+    });
+  });
+
+  app.get('/delete/:id', (req, res) => {
+    let id = req.params.id;
+    console.log(id);
+    let query = `DELETE FROM tb_projects WHERE id= ${id}`;
+    client.query(query, (err, result) => {
+      if (err) throw err;
+      res.redirect('/');
+    });
+  });
 });
 
 app.listen(port, () => {

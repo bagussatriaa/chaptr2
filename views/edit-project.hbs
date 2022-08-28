@@ -34,10 +34,10 @@
         <h1 class='text-center fw-bold pt-5 mb-5'>Update My Project</h1>
         <div class='row'>
           <div class='col-5 mx-auto'>
-            <form action='/update/{{index}}' method='post'>
+            <form action='/update/{{id}}' method='post'>
               <div>
                 <label class='form-label fw-bold' for='project-name'>Project Name</label>
-                <input class='form-control shadow' type='text' id='project-name' name='projectName' value='{{data.projectName}}' />
+                <input class='form-control shadow' type='text' id='project-name' name='project_name' value='{{data.project_name}}' />
               </div>
               <div class='row'>
                 <div class='col-6'>
@@ -49,10 +49,10 @@
               </div>
               <div class='row'>
                 <div class='col-6'>
-                  <input class='form-control shadow' type='date' name='startDate' id='startDate' value='{{data.startDate}}' />
+                  <input class='form-control shadow' type='date' name='startDate' id='start_date' value='{{data.sd_afterFormat}}' />
                 </div>
                 <div class='col-6'>
-                  <input class='form-control shadow' type='date' name='endDate' id='endDate' value='{{data.endDate}}' />
+                  <input class='form-control shadow' type='date' name='endDate' id='end_date' value='{{data.ed_afterFormat}}' />
                 </div>
               </div>
 
