@@ -92,11 +92,7 @@
           {{#each cardData}}
             <div class='col-lg-4'>
               <div class='card shadow-lg py-2 px-2 mb-5' width='10rem'>
-                <img
-                  src='https://images.unsplash.com/photo-1490775949603-0e355e8e01ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDh8fHRlY2hub2xvZ2llc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
-                  class='card-img-top rounded'
-                  alt='Card Image'
-                />
+                <img src='uploads/{{this.image}}' alt='Card Image' />
                 <div class='card-body'><a href='/detail/{{this.id}}'>
                     <h1 class='card-title text-dark fw-bold'>{{this.project_name}}</h1>
                   </a>

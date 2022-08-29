@@ -40,8 +40,8 @@
     <head>
       <h1 class='text-center my-5'>{{data.project_name}}</h1>
       <div class='row'>
-        <div class='col-lg-7'>
-          <img src='../assets/img/download-removebg-preview.png' class='img-fluid' alt='image' />
+        <div class='col-lg-7 d-flex justify-content-center'>
+          <img src='../uploads/{{data.image}}' class='img-fluid' alt='image' width='300' />
         </div>
         <div class='col-lg-5'>
           <h2>Duration: {{data.duration}}</h2>
@@ -81,7 +81,7 @@
           </div>
         </div>
       </div>
-      <main>
+      <main class='mt-5 p-5'>
         {{data.desc}}
       </main>
     </head>

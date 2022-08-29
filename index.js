@@ -4,7 +4,7 @@ const dayjs = require('dayjs');
 const bcrypt = require('bcrypt');
 const flash = require('express-flash');
 const session = require('express-session');
-
+const upload = require('./middleware/fileUpl');
 const app = express();
 
 app.use(
@@ -20,6 +20,7 @@ app.use(
 
 app.set('view engine', 'hbs');
 app.use('/assets', express.static(__dirname + '/assets'));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 port = 300;
@@ -28,8 +29,9 @@ database.connect((err, client, done) => {
   if (err) throw err;
 
   app.get('/', (req, res) => {
-    // console.log(req.session.login);
-    let query = 'SELECT * FROM tb_projects ORDER BY id DESC';
+    // console.log(req.session.user);
+    let query = `SELECT tb_projects.id, project_name, start_date, end_date, "desc", tech, image, author_id, name
+    FROM tb_projects LEFT JOIN tb_user ON tb_projects.author_id = tb_user.id ORDER BY id DESC;`;
     client.query(query, (err, result) => {
       if (err) throw err;
       data = result.rows;
@@ -43,8 +45,16 @@ database.connect((err, client, done) => {
           login: req.session.login,
         };
       });
+
+      let filterCard;
+      if (req.session.user) {
+        filterCard = cardData.filter((items) => {
+          return items.author_id === req.session.user.id;
+        });
+      }
+      let resultCard = req.session.user ? filterCard : cardData;
       // console.log(cardData);
-      res.render('index', { cardData, user: req.session.user, login: req.session.login });
+      res.render('index', { cardData: resultCard, user: req.session.user, login: req.session.login });
     });
   });
 
@@ -56,19 +66,20 @@ database.connect((err, client, done) => {
     res.render('project');
   });
 
-  app.post('/add-project', (req, res) => {
+  app.post('/add-project', upload.single('image'), (req, res) => {
     let data = req.body;
     // console.log(data.projectName);
-
+    let image = req.file.filename;
     let icons = {
       node: data.node,
       python: data.python,
       laravel: data.laravel,
       js: data.js,
     };
-    let query = `INSERT INTO tb_projects(project_name, start_date, end_date, "desc", tech) 
-    VALUES ('${data.project_name}', '${data.start_date}', '${data.end_date}', '${data.desc}', '{"${icons.node}","${icons.python}","${icons.laravel}","${icons.js}"}');`;
-    console.log(data);
+    let userId = req.session.user.id;
+    let query = `INSERT INTO tb_projects(project_name, start_date, end_date, "desc", image, tech, author_id) 
+    VALUES ('${data.project_name}', '${data.start_date}', '${data.end_date}', '${data.desc}', '${image}', '{"${icons.node}","${icons.python}","${icons.laravel}","${icons.js}"}', ${userId});`;
+    // console.log(data);
     client.query(query, (err, result) => {
       if (err) throw err;
     });
@@ -99,15 +110,15 @@ database.connect((err, client, done) => {
         };
       });
 
-      console.log(editData[0]);
+      // console.log(editData[0]);
 
       res.render('edit-project', { id, data: editData[0] });
     });
   });
 
-  app.post('/update/:id', (req, res) => {
+  app.post('/update/:id', upload.single('image'), (req, res) => {
     let id = req.params.id;
-
+    let image = req.file.filename;
     let dataUpdate = req.body;
     console.log(dataUpdate);
     let iconsUpdate = {
@@ -119,11 +130,12 @@ database.connect((err, client, done) => {
     console.log(iconsUpdate);
 
     let query = `UPDATE public.tb_projects SET project_name='${dataUpdate.project_name}', start_date='${dataUpdate.startDate},',
-    end_date='${dataUpdate.endDate}', "desc"='${dataUpdate.desc}', tech= '{"${iconsUpdate.node}","${iconsUpdate.python}","${iconsUpdate.laravel}","${iconsUpdate.js}"}' WHERE id= '${id}'`;
+    end_date='${dataUpdate.endDate}', "desc"='${dataUpdate.desc}', image ='${image}', tech= '{"${iconsUpdate.node}","${iconsUpdate.python}","${iconsUpdate.laravel}","${iconsUpdate.js}"}' WHERE id= '${id}'`;
 
     client.query(query, (err, result) => {
       if (err) throw err;
       console.log(result);
+      console.log(image);
       res.redirect('/');
     });
   });
@@ -134,9 +146,10 @@ database.connect((err, client, done) => {
 
   app.get('/detail/:id', (req, res) => {
     let id = req.params.id;
-    console.log(id);
+    // console.log(id);
     let query = `SELECT * FROM tb_projects WHERE id =${id}`;
-    database.query(query, (err, result) => {
+    // console.log(req.file.filename);
+    client.query(query, (err, result) => {
       if (err) throw err;
 
       data = result.rows;
@@ -157,6 +170,7 @@ database.connect((err, client, done) => {
           python: items.tech[1],
           laravel: items.tech[2],
           js: items.tech[3],
+          // image,
         };
       });
       console.log(detail[0]);
